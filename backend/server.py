@@ -71,10 +71,10 @@ websocket_connections = []
 
 def get_dark_ai_response(user_message: str) -> str:
     """Handle DARK AI specific responses and identity questions"""
-    import unicodedata
-    
-    # Normalize unicode characters
-    user_msg = unicodedata.normalize('NFKD', user_message).lower()
+    # Simple string replacement for Turkish characters
+    user_msg = user_message.lower()
+    user_msg = user_msg.replace('ı', 'i').replace('ğ', 'g').replace('ü', 'u').replace('ş', 's').replace('ö', 'o').replace('ç', 'c')
+    user_msg = user_msg.replace('İ', 'i').replace('Ğ', 'g').replace('Ü', 'u').replace('Ş', 's').replace('Ö', 'o').replace('Ç', 'c')
     
     # Turkish identity responses
     if any(phrase in user_msg for phrase in ["kim yapti", "seni kim", "kim tarafindan"]):
