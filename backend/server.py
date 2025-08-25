@@ -71,23 +71,33 @@ websocket_connections = []
 
 def get_dark_ai_response(user_message: str) -> str:
     """Handle DARK AI specific responses and identity questions"""
-    # Simple string replacement for Turkish characters
-    user_msg = user_message.lower()
-    user_msg = user_msg.replace('ı', 'i').replace('ğ', 'g').replace('ü', 'u').replace('ş', 's').replace('ö', 'o').replace('ç', 'c')
-    user_msg = user_msg.replace('İ', 'i').replace('Ğ', 'g').replace('Ü', 'u').replace('Ş', 's').replace('Ö', 'o').replace('Ç', 'c')
+    import re
+    import unicodedata
     
-    # Turkish identity responses
-    if any(phrase in user_msg for phrase in ["kim yapti", "seni kim", "kim tarafindan"]):
+    # Normalize unicode and convert to lowercase
+    user_msg = unicodedata.normalize('NFKD', user_message).lower()
+    # Remove diacritical marks
+    user_msg = ''.join(c for c in user_msg if not unicodedata.combining(c))
+    # Additional Turkish character mapping
+    turkish_map = {'ı': 'i', 'ğ': 'g', 'ü': 'u', 'ş': 's', 'ö': 'o', 'ç': 'c'}
+    for tr_char, en_char in turkish_map.items():
+        user_msg = user_msg.replace(tr_char, en_char)
+    
+    # Turkish identity responses for creator
+    creator_patterns = ["kim yapti", "seni kim", "kim tarafindan", "kim olusturdu", "yapimci"]
+    if any(pattern in user_msg for pattern in creator_patterns):
         return "Azad Mehtiyev ve Emergent tarafından tasarlandım."
     
-    if any(phrase in user_msg for phrase in ["ismin ne", "adin ne", "kim sin", "sen kimsin", "adi ne"]):
+    # Turkish identity responses for name
+    name_patterns = ["ismin ne", "adin ne", "kim sin", "sen kimsin", "adi ne", "adini", "nesin"]
+    if any(pattern in user_msg for pattern in name_patterns):
         return "Ben DARK AI'yım."
     
     # English identity responses (backup)
-    if "who made you" in user_msg or "who created you" in user_msg:
+    if any(pattern in user_msg for pattern in ["who made you", "who created you", "who developed you"]):
         return "Azad Mehtiyev ve Emergent tarafından tasarlandım."
     
-    if "what is your name" in user_msg or "what's your name" in user_msg:
+    if any(pattern in user_msg for pattern in ["what is your name", "what's your name", "who are you"]):
         return "Ben DARK AI'yım."
     
     return None
