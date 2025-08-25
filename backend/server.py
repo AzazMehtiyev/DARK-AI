@@ -77,7 +77,7 @@ def get_dark_ai_response(user_message: str) -> str:
     if "kim yaptı" in user_msg_lower or "seni kim" in user_msg_lower or "kim tarafından" in user_msg_lower:
         return "Azad Mehtiyev ve Emergent tarafından tasarlandım."
     
-    if "ismin ne" in user_msg_lower or "adın ne" in user_msg_lower or "kim sin" in user_msg_lower:
+    if any(phrase in user_msg_lower for phrase in ["ismin ne", "adın ne", "kim sin", "sen kimsin", "adı ne"]):
         return "Ben DARK AI'yım."
     
     # English identity responses (backup)
