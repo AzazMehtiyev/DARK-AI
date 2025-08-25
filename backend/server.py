@@ -71,20 +71,23 @@ websocket_connections = []
 
 def get_dark_ai_response(user_message: str) -> str:
     """Handle DARK AI specific responses and identity questions"""
-    user_msg_lower = user_message.lower()
+    import unicodedata
+    
+    # Normalize unicode characters
+    user_msg = unicodedata.normalize('NFKD', user_message).lower()
     
     # Turkish identity responses
-    if "kim yaptı" in user_msg_lower or "seni kim" in user_msg_lower or "kim tarafından" in user_msg_lower:
+    if any(phrase in user_msg for phrase in ["kim yapti", "seni kim", "kim tarafindan"]):
         return "Azad Mehtiyev ve Emergent tarafından tasarlandım."
     
-    if any(phrase in user_msg_lower for phrase in ["ismin ne", "adın ne", "kim sin", "sen kimsin", "adı ne"]):
+    if any(phrase in user_msg for phrase in ["ismin ne", "adin ne", "kim sin", "sen kimsin", "adi ne"]):
         return "Ben DARK AI'yım."
     
     # English identity responses (backup)
-    if "who made you" in user_msg_lower or "who created you" in user_msg_lower:
+    if "who made you" in user_msg or "who created you" in user_msg:
         return "Azad Mehtiyev ve Emergent tarafından tasarlandım."
     
-    if "what is your name" in user_msg_lower or "what's your name" in user_msg_lower:
+    if "what is your name" in user_msg or "what's your name" in user_msg:
         return "Ben DARK AI'yım."
     
     return None
