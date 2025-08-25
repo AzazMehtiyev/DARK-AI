@@ -106,6 +106,7 @@ async def chat_with_ai(request: ChatRequest):
         
         # Check for identity responses first
         identity_response = get_dark_ai_response(request.message)
+        logging.info(f"User message: '{request.message}' -> Identity response: '{identity_response}'")
         if identity_response:
             ai_response_text = identity_response
         else:
